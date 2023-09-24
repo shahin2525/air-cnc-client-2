@@ -34,7 +34,43 @@ const SignUp = () => {
     const url = `https://api.imgbb.com/1/upload?key=${
       import.meta.env.VITE_IMGBB_KEY
     }`;
-    console.log(url);
+    fetch(url, {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((imageData) => {
+        const imageUrl = imageData.data.display_url;
+        createUser(email, password)
+          .then((result) => {
+            // const user = result.user;
+            updateUserProfile(name, imageUrl)
+              // console.log(user);
+              // navigate(from, { replace: true });
+              .then(() => {
+                toast.success("User updated successfully");
+                navigate(from, { replace: true });
+              })
+              .catch((error) => {
+                const errorMessage = error.message;
+                toast.error(errorMessage);
+
+                setLoading(false);
+              });
+          })
+          .catch((error) => {
+            const errorMessage = error.message;
+            toast.error(errorMessage);
+
+            setLoading(false);
+          });
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        toast.error(errorMessage);
+
+        setLoading(false);
+      });
     return;
   };
   //   handle Google login
