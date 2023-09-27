@@ -5,7 +5,8 @@ import Search from "./Search";
 
 const Navbar = () => {
   return (
-    <div className="fixed w-full py-4 drop-shadow-sm  z-index-10">
+    <div className="fixed w-full py-4 drop-shadow-sm z-10 ">
+      {/* bg-opacity-30 bg-black text-white */}
       <div className="py-4 border-b-[1px]">
         <Container>
           <div className="flex flex-row items-center justify-between gap-3 md:gap-0">
