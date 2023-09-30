@@ -5,6 +5,7 @@ import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import { TiRefresh } from "react-icons/ti";
 import toast from "react-hot-toast";
+import { savedUser } from "../../api/auth";
 const Login = () => {
   const navigate = useNavigate();
   //   const [error, setError] = useState("");
@@ -58,8 +59,9 @@ const Login = () => {
   const handleGoogleLogin = () => {
     signInWithGoogle()
       .then((result) => {
-        const user = result.user;
-        console.log(user);
+        // const user = result.user;
+        // console.log(user);
+        savedUser(result.user);
         navigate(from, { replace: true });
       })
       .catch((error) => {

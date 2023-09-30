@@ -5,6 +5,7 @@ import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import { TiRefresh } from "react-icons/ti";
 import toast from "react-hot-toast";
+import { savedUser } from "../../api/auth";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -43,12 +44,13 @@ const SignUp = () => {
         const imageUrl = imageData.data.display_url;
         createUser(email, password)
           .then((result) => {
-            // const user = result.user;
+            const user = result.user;
             updateUserProfile(name, imageUrl)
               // console.log(user);
               // navigate(from, { replace: true });
               .then(() => {
-                toast.success("User updated successfully");
+                toast.success("sign-up successfully");
+                savedUser(user);
                 navigate(from, { replace: true });
               })
               .catch((error) => {
@@ -79,6 +81,7 @@ const SignUp = () => {
       .then((result) => {
         const user = result.user;
         console.log(user);
+        savedUser(user);
         navigate(from, { replace: true });
       })
       .catch((error) => {
