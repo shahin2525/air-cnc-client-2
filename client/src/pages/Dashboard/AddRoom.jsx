@@ -4,7 +4,10 @@ import AddRoomForm from "../../components/Forms/AddRoomForm";
 import { imageUpload } from "../../api/utilities";
 import { AuthContext } from "../../providers/AuthProvider";
 import { addRoom } from "../../api/rooms";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 const AddRoom = () => {
+  const navigate = useNavigate();
   const [imageUploadText, setImageUploadText] = useState("image upload");
   const [loading, setLoading] = useState(false);
   const { user } = useContext(AuthContext);
@@ -33,6 +36,7 @@ const AddRoom = () => {
     // image upload
     imageUpload(image)
       .then((data) => {
+        setImageUploadText("uploading");
         const roomData = {
           location,
           category,
@@ -53,7 +57,13 @@ const AddRoom = () => {
         };
         // post data  to server
         addRoom(roomData)
-          .then((data) => console.log(data))
+          .then((data) => {
+            console.log(data);
+            toast.success("room added successfully");
+            setImageUploadText("uploaded");
+            navigate("/dashboard/my-listings");
+          })
+
           .catch((err) => console.log(err));
         setLoading(false);
       })

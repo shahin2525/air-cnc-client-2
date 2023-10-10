@@ -1,16 +1,14 @@
 import Heading from "../Heading/Heading";
 
-const Header = () => {
+const Header = ({ roomData }) => {
+  // console.log(roomData);
   return (
     <div>
-      <Heading
-        title={"Sidemen Indonesia Bali "}
-        subtitle={"Bali Dhaka Bangladesh"}
-      ></Heading>
+      <Heading title={roomData.title} subtitle={roomData.location}></Heading>
       <div className="w-full md:h-[60vh] overflow-hidden rounded-xl pt-2">
         <img
           className="object-cover w-full rounded-xl"
-          src="https://a0.muscache.com/im/pictures/4f70b681-a792-4530-8c52-f2a8d262942d.jpg"
+          src={roomData.image}
           alt="header image"
         />
       </div>
