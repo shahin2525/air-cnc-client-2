@@ -28,12 +28,21 @@ export const updateRoomStatus = async (id, status) => {
   return data;
 };
 
-// Get all bookings for a user by email
+// Get all bookings for guest by email
 export const getBookings = async (email) => {
   const response = await fetch(
     `${import.meta.env.VITE_API_URL}/bookings?email=${email}`
   );
   const bookings = await response.json();
+  return bookings;
+};
+// Get all bookings for host
+export const getHostBookings = async (email) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/bookings/host?email=${email}`
+  );
+  const bookings = await response.json();
+  console.log(bookings);
   return bookings;
 };
 

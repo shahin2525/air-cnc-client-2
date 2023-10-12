@@ -33,10 +33,10 @@ const AddRoom = () => {
     const bathrooms = event.target.bathrooms.value;
     const description = event.target.description.value;
     const image = event.target.image.files[0];
+    setImageUploadText("uploading ...");
     // image upload
     imageUpload(image)
       .then((data) => {
-        setImageUploadText("uploading");
         const roomData = {
           location,
           category,
@@ -59,8 +59,9 @@ const AddRoom = () => {
         addRoom(roomData)
           .then((data) => {
             console.log(data);
-            toast.success("room added successfully");
             setImageUploadText("uploaded");
+            toast.success("room added successfully");
+
             navigate("/dashboard/my-listings");
           })
 
