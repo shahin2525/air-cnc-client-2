@@ -82,7 +82,7 @@ const MyBookings = () => {
         </div>
       ) : (
         <EmptyState
-          message={"You did not book"}
+          message={"You did not book yet"}
           address={"/"}
           label={"Booking Browser"}
         ></EmptyState>

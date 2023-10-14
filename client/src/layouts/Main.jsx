@@ -4,14 +4,14 @@ import Footer from "../components/Shared/Footer/Footer";
 
 const Main = () => {
   return (
-    <>
+    <div>
       <Navbar></Navbar>
 
-      <div className="pt-28 pb-10">
+      <div className="pt-24 min-h-[calc(100vh-68px)]">
         <Outlet></Outlet>
       </div>
       <Footer></Footer>
-    </>
+    </div>
   );
 };
 
