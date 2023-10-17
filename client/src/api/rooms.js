@@ -25,18 +25,18 @@ export const getRoom = async (id) => {
   return data;
 };
 // get filter room for host
-export const getHostRooms = async (email) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/rooms/${email}`,
-    {
-      headers: {
-        authorization: `bearer ${localStorage.getItem("access-token")}`,
-      },
-    }
-  );
-  const data = await response.json();
-  return data;
-};
+// export const getHostRooms = async (email) => {
+//   const response = await fetch(
+//     `${import.meta.env.VITE_API_URL}/rooms/${email}`,
+//     {
+//       headers: {
+//         authorization: `bearer ${localStorage.getItem("access-token")}`,
+//       },
+//     }
+//   );
+//   const data = await response.json();
+//   return data;
+// };
 // delete rooms
 export const deleteRooms = async (id) => {
   const response = await fetch(`${import.meta.env.VITE_API_URL}/rooms/${id}`, {
