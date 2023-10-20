@@ -11,10 +11,13 @@ const useAxiosSecure = () => {
   const { logOut } = useContext(AuthContext);
   const navigate = useNavigate();
   useEffect(() => {
-    const token = `bearer ${localStorage.getItem("access-token")}`;
+    // const token = `bearer ${localStorage.getItem("access-token")}`;
+
     axiosSecure.interceptors.request.use((config) => {
+      const token = localStorage.getItem("access-token");
       if (token) {
-        config.headers.Authorization = token;
+        // config.headers.Authorization = token;
+        config.headers.Authorization = `Bearer ${token}`;
       }
       return config;
     });

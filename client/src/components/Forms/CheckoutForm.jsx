@@ -8,6 +8,11 @@ import "./style.css";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { updateRoomStatus } from "../../api/bookings";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { ImSpinner9 } from "react-icons/im";
+
 const CheckoutForm = ({ closeModal, bookingInfo }) => {
   const { user } = useContext(AuthContext);
   const [cardError, setCardError] = useState("");
@@ -15,6 +20,8 @@ const CheckoutForm = ({ closeModal, bookingInfo }) => {
   const elements = useElements();
   const [axiosSecure] = useAxiosSecure();
   const [clientSecret, setClientSecret] = useState("");
+  const navigate = useNavigate();
+  const [processing, setProcessing] = useState(false);
   useEffect(() => {
     if (bookingInfo?.price) {
       axiosSecure
@@ -59,6 +66,8 @@ const CheckoutForm = ({ closeModal, bookingInfo }) => {
     } else {
       console.log("[PaymentMethod]", paymentMethod);
     }
+    // confirm payment
+    setProcessing(true);
     const { paymentIntent, error: confirmCardError } =
       await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
@@ -69,6 +78,41 @@ const CheckoutForm = ({ closeModal, bookingInfo }) => {
           },
         },
       });
+
+    if (confirmCardError) {
+      setCardError(confirmCardError.message);
+      console.log("[error]", confirmCardError);
+    } else {
+      console.log("[paymentIntent]", paymentIntent);
+      if (paymentIntent.status === "succeeded") {
+        // save paymentInfo in db
+        const paymentInfo = {
+          ...bookingInfo,
+          transactionId: paymentIntent.id,
+          data: new Date(),
+        };
+        axiosSecure.post("/bookings", paymentInfo).then((res) => {
+          console.log(res.data);
+          if (res.data.insertedId) {
+            updateRoomStatus(paymentInfo.roomId, true)
+              .then((data) => {
+                setProcessing(false);
+                console.log(data);
+                const text = `Booking Successful! TransactionId: ${paymentIntent.id}`;
+                toast.success(text);
+
+                navigate("/dashboard/my-bookings");
+
+                closeModal();
+              })
+              .catch((err) => {
+                console.log(err);
+                setProcessing(false);
+              });
+          }
+        });
+      }
+    }
   };
 
   return (
@@ -93,7 +137,7 @@ const CheckoutForm = ({ closeModal, bookingInfo }) => {
 
         <div className="flex mt-2 justify-around">
           <button
-            disabled={!stripe}
+            disabled={!stripe || processing || !clientSecret}
             type="submit"
             className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
             onClick={closeModal}
@@ -101,11 +145,15 @@ const CheckoutForm = ({ closeModal, bookingInfo }) => {
             Cancel
           </button>
           <button
-            type="button"
+            type="submit"
             className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
             // onClick={modalHandler}
           >
-            Pay {bookingInfo.price}$
+            {processing ? (
+              <ImSpinner9 className="m-auto animate-spin " size={24} />
+            ) : (
+              ` Pay ${bookingInfo.price}$`
+            )}
           </button>
         </div>
       </form>
